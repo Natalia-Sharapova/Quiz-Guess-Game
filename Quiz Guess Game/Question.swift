@@ -36,7 +36,7 @@ struct Question {
         
         Question(image: UIImage(named: "image3"), answer: [
         Answer(text: "Cooking Simulator", correctAnswer: "Fallout" ),
-        Answer(text: "What remainded with Edith Finch", correctAnswer: "Fallout"),
+        Answer(text: "What remains with Edith Finch", correctAnswer: "Fallout"),
         Answer(text: "PUBG", correctAnswer: "Fallout"),
         Answer(text: "Fallout", correctAnswer: "Fallout"),
         ]),
