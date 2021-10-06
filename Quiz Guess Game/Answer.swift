@@ -8,7 +8,6 @@
 struct Answer {
     
     let text: String
-
     let correctAnswer: String
     }
 

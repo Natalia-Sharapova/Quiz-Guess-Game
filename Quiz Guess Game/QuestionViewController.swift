@@ -7,6 +7,8 @@
 
 import UIKit
 
+var correctAnswersAll = 0
+
 class QuestionViewController: UIViewController {
     
     @IBOutlet weak var imageQuestionView: UIImageView!
@@ -21,8 +23,7 @@ class QuestionViewController: UIViewController {
     @IBOutlet weak var nextQuestionButton: UIButton!
     @IBOutlet weak var progressView: UIProgressView!
     
-    var questionIndex = 0
-    var correctAnswersAll = 0
+   private var questionIndex = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,9 +32,9 @@ class QuestionViewController: UIViewController {
         button2.frame = CGRect(x: view.bounds.midX - 170, y: 460, width: 340, height: 50)
         button3.frame = CGRect(x: view.bounds.midX - 170, y: 530, width: 340, height: 50)
         button4.frame = CGRect(x: view.bounds.midX - 170, y: 600, width: 340, height: 50)
-       
+        
         nextQuestionButton.frame = CGRect(x: 235, y: 680, width: 150, height: 40)
-    
+        
         for button in buttons {
             button.backgroundColor = .gray
             button.alpha = 0.7
@@ -51,14 +52,19 @@ class QuestionViewController: UIViewController {
         nextQuestionButton.layer.borderWidth = 1
         nextQuestionButton.layer.borderColor = UIColor.white.cgColor
         nextQuestionButton.setTitle("Next question ->", for: .normal)
-       
+        
         updateUI()
+        nextQuestionButton.isEnabled = false
+    }
+    
+    func goToResultVC () {
+        performSegue(withIdentifier: "GoToResultVC", sender: nil)
     }
     
     func updateUI () {
         
         for button in buttons {
-        button.backgroundColor = .gray
+            button.backgroundColor = .gray
         }
         let question = Question.all[questionIndex]
         let answer = question.answer
@@ -74,65 +80,64 @@ class QuestionViewController: UIViewController {
     }
     
     func nextQuestion () {
+        nextQuestionButton.isEnabled = false
         
         for button in buttons {
             button.isEnabled = true
         }
-        questionIndex = (questionIndex + 1) % Question.all.count
-        updateUI()
+        questionIndex += 1
+        
+        if questionIndex < Question.all.count {
+            updateUI()
+        } else {
+            goToResultVC()
+        }
     }
     
     @IBAction func buttonPressed(_ sender: UIButton) {
         let answer = Question.all[questionIndex].answer
         let index = sender.tag
         
-         /*guard 0 <= questionIndex && questionIndex <= answer.count else {
-                return
-            }*/
-               if sender.currentTitle == (answer[index].correctAnswer) {
-                
-                correctAnswersAll += 1
-                
-                sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
-                UIButton.animate(withDuration: 2, delay: 0, usingSpringWithDamping: CGFloat(0.20),
-                                 initialSpringVelocity: CGFloat(6.0), options: UIButton.AnimationOptions.allowUserInteraction,
-                               animations: {
-                               sender.transform = CGAffineTransform.identity
-                               sender.backgroundColor = .green
-                               }
-                               )
-                for button in buttons {
-                    if button.currentTitle != (answer[index].correctAnswer) {
-                        button.isEnabled = false
-                    }
+        nextQuestionButton.isEnabled = true
+        
+        if sender.currentTitle == (answer[index].correctAnswer) {
+            
+            correctAnswersAll += 1
+            
+            sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+            UIButton.animate(withDuration: 2, delay: 0, usingSpringWithDamping: CGFloat(0.20),
+                             initialSpringVelocity: CGFloat(6.0),
+                             options: UIButton.AnimationOptions.allowUserInteraction,
+                             animations: {
+                                sender.transform = CGAffineTransform.identity
+                                sender.backgroundColor = .green
+                             })
+            
+            for button in buttons {
+                if button.currentTitle != (answer[index].correctAnswer) {
+                    button.isEnabled = false
                 }
-               
-                print(correctAnswersAll)
-               } else {
-                sender.backgroundColor = .red
-                for button in buttons {
-                    if button.currentTitle == (answer[index].correctAnswer) {
-                        button.backgroundColor = .green
-                    }
-                    if button.currentTitle != (answer[index].correctAnswer) {
-                        button.isEnabled = false
+            }
+            print(correctAnswersAll)
+            
+        } else {
+            sender.backgroundColor = .red
+            for button in buttons {
+                if button.currentTitle == (answer[index].correctAnswer) {
+                    button.backgroundColor = .green
                 }
+                if button.currentTitle != (answer[index].correctAnswer) {
+                    button.isEnabled = false
                 }
-                    }
-                print("incorrect answer")
+            }
+        }
+        
+        if (answer[index].correctAnswer) == "Party animals" {
+            nextQuestionButton.setTitle("Results ->", for: .normal)
+        }
     }
-
-    @IBAction func ddd() {
-    nextQuestion()
+    
+    @IBAction func nextQuestionPressed() {
+        nextQuestion()
     }
-
-
-    
-
-
-    
-
-
-
-
 }

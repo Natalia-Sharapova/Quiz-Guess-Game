@@ -11,11 +11,9 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var label: UILabel!
     
-    //let label = UILabel(frame: CGRect(x: 120, y: 310, width: 200, height: 80))
-
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         label.text = """
             Let's start?
             Click anywhere
@@ -29,14 +27,13 @@ class ViewController: UIViewController {
         UILabel.animate(withDuration: 2, delay: 0, options: [.autoreverse, .repeat, .allowUserInteraction]) {
             self.label.alpha = 0.1
         }
-        
     }
-   
+    
     @IBAction func gesture(_ sender: UITapGestureRecognizer) {
         performSegue(withIdentifier: "Question Segue", sender: nil)
     }
-
+    
     @IBAction func unwind(_ segue: UIStoryboardSegue) {
     }
-
+    
 }
